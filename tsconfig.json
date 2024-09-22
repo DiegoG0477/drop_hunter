@@ -11,7 +11,8 @@
         ],
         "skipLibCheck": true,
         /* Bundler mode */
-        "moduleResolution": "bundler",
+        // "moduleResolution": "bundler",
+        "moduleResolution": "node",
         "resolveJsonModule": true,
         "isolatedModules": true,
         /* Linting */
@@ -19,7 +20,14 @@
         "strictPropertyInitialization": false,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "noFallthroughCasesInSwitch": true
+        "noFallthroughCasesInSwitch": true,
+        "baseUrl": "./src",
+        "paths": {
+            "@domain/*": ["domain/*"],  // Ajusta alias para que coincida con 'src/domain'
+            "@application/*": ["application/*"],
+            "@framework/*": ["framework/*"],
+            "@presentation/*": ["presentation/*"]
+        }
     },
     "include": [
         "src"

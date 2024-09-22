@@ -11,8 +11,15 @@ module.exports = {
         path: path.resolve(process.cwd(), 'dist'),
         filename: "bundle.min.js"
     },
+
     resolve: {
-        extensions: [".ts", ".js", ".json"]
+        extensions: [".ts", ".js", ".json"],
+        alias: {
+            "@domain": path.resolve(__dirname, "../src/domain"),
+            "@application": path.resolve(__dirname, "../src/application"),
+            "@framework": path.resolve(__dirname, "../src/framework"),
+            "@presentation": path.resolve(__dirname, "../src/presentation")
+        }
     },
     module: {
         rules: [

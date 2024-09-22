@@ -1,35 +1,68 @@
 import { Scene } from 'phaser';
+import { Catcher } from '@domain/entities/Catcher';
 
 export class Game extends Scene
 {
-    camera: Phaser.Cameras.Scene2D.Camera;
     background: Phaser.GameObjects.Image;
-    msg_text : Phaser.GameObjects.Text;
+    poison: Phaser.GameObjects.Image;
+    target: Phaser.GameObjects.Image;
+    catcher: Phaser.Physics.Arcade.Image;
+    level: number;
 
     constructor ()
     {
         super('Game');
     }
 
+    init(data: { level: number }) {
+        this.level = data.level; 
+    }
+
     create ()
     {
-        this.camera = this.cameras.main;
-        this.camera.setBackgroundColor(0x00ff00);
+        let lvlBackgroundStr = "";
+        let lvlTargetStr = "";
+        let lvlPoisonStr = "";
+        let lvlCatcherStr = "";
+        switch(this.level){
+            case 1:
+                lvlBackgroundStr = 'lvlOneBackground';
+                lvlTargetStr = 'lvlOneTarget';
+                lvlPoisonStr = 'lvlOnePoison';
+                lvlCatcherStr = 'lvlOneCatcher';
+                break;
+            case 2:
+                lvlBackgroundStr = 'lvlTwoBackground';
+                lvlTargetStr = 'lvlTwoTarget';
+                lvlPoisonStr = 'lvlTwoPoison';
+                lvlCatcherStr = 'lvlTwoCatcher';
+                break;
+        }
 
-        this.background = this.add.image(512, 384, 'background');
-        this.background.setAlpha(0.5);
+        this.background = this.add.image(0, 0, lvlBackgroundStr)
+        .setOrigin(0, 0)
+        .setDisplaySize(this.scale.width, this.scale.height);
 
-        this.msg_text = this.add.text(512, 384, 'Make something fun!\nand share it with us:\nsupport@phaser.io', {
-            fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        });
-        this.msg_text.setOrigin(0.5);
+        this.target = this.add.image(360, 100, lvlTargetStr);
 
-        this.input.once('pointerdown', () => {
+        this.poison = this.add.image(360, 300, lvlPoisonStr);
 
-            this.scene.start('GameOver');
+        this.catcher = this.physics.add.image(360, 1200, lvlCatcherStr)
+            .setOrigin(0.5, 0.5)
+            .setDisplaySize(120, 120)
+            .setCollideWorldBounds(true);
 
+        const catcher = new Catcher('0', lvlCatcherStr, 3, 0, 850);
+
+        this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
+            const deltaX = pointer.x - this.catcher.x;
+            const targetX = pointer.x;
+
+            if (Math.abs(deltaX) > catcher.maxSpeed * this.game.loop.delta / 1000) {
+            this.catcher.x += Math.sign(deltaX) * catcher.maxSpeed * this.game.loop.delta / 1000;
+            } else {
+            this.catcher.x = targetX;
+            }
         });
     }
 }
