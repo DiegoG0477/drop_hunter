@@ -1,8 +1,8 @@
-import { Boot } from './scenes/Boot';
-import { Game as MainGame } from './scenes/Game';
-import { GameOver } from './scenes/GameOver';
-import { MainMenu } from './scenes/MainMenu';
-import { Preloader } from './scenes/Preloader';
+import { Boot } from './presentation/scenes/Boot';
+import { Game as MainGame } from './presentation/scenes/Game';
+import { GameOver } from './presentation/scenes/GameOver';
+import { MainMenu } from './presentation/scenes/MainMenu';
+import { Preloader } from './presentation/scenes/Preloader';
 
 import { Game, Types } from "phaser";
 

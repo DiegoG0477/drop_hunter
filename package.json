@@ -1,6 +1,6 @@
 {
     "name": "drop_hunter",
-    "version": "1.2.1",
+    "version": "1.0",
     "main": "src/main.js",
     "scripts": {
         "dev": "node log.js dev & webpack-dev-server --config webpack/config.dev.js --open",
@@ -10,15 +10,12 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/phaserjs/template-webpack.git"
+        "url": "git+https://github.com/DiegoG0477/drop_hunter.git"
     },
-    "author": "Phaser Studio <support@phaser.io> (https://phaser.io/)",
+    "author": "DiegoG0477",
     "license": "MIT",
     "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
-    "bugs": {
-        "url": "https://github.com/phaserjs/template-webpack/issues"
-    },
-    "homepage": "https://github.com/phaserjs/template-webpack#readme",
+    "homepage": "https://github.com/DiegoG0477/drop_hunter.git#readme",
     "devDependencies": {
         "@babel/core": "^7.24.5",
         "@babel/preset-env": "^7.24.5",
