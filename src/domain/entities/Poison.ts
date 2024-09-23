@@ -1,7 +1,8 @@
 export class Poison{
     constructor(
         readonly id: string,
-        readonly image: string,
-        readonly gravity: number,
+        readonly texture: string,
+        readonly gravityY: number,
+        readonly rotationSpeed: number
     ){}
 }

@@ -1,8 +1,11 @@
-import { Game } from "@domain/entities/Game";
+import { Item } from "@domain/entities/Item";
 
 export interface GameRepository {
-    startGame(): Promise<Game>;
-    endGame(game: Game): Promise<Game>;
-    pauseGame(game: Game): Promise<Game>;
-    resumeGame(game: Game): Promise<Game>;
+    startGame(): void;
+    endGame(): void;
+    pauseGame(): void;
+    resumeGame(): void;
+    startSpawning(): void;
+    getNextSpawnItem(): Promise<Item>;
+    stopSpawning(): void;
 }
