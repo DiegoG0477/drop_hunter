@@ -38,6 +38,8 @@ export class Preloader extends Scene
 
         this.load.image('levelOneBtn', 'buttons/level_one_btn.png');
 
+        this.load.image('levelTwoBtn', 'buttons/level_two_btn.png');
+
         this.load.image('lvlOneBackground', 'backgrounds/lvl_one_bg.webp');
 
         this.load.image('lvlTwoBackground', 'backgrounds/lvl_two_bg.webp');
@@ -55,7 +57,17 @@ export class Preloader extends Scene
         this.load.image('lvlTwoCatcher', 'player/skin/soccer_gloves.png');
 
         this.load.audio('backgroundMusic', 'sound/music/menu_music.wav');
-        
+
+        this.load.audio('lvlOneMusic', 'sound/music/happy.mp3');
+
+        this.load.audio('lvlTwoMusic', 'sound/music/awake10.mp3');
+
+        this.load.audio('lvlOneFailSound', 'sound/effects/impact.mp3');
+
+        this.load.audio('lvlTwoFailSound', 'sound/effects/goal-sfx.mp3');
+
+        this.load.audio('gameOverSound', 'sound/effects/violin-lose.mp3');
+
     }
 
     create ()

@@ -24,7 +24,7 @@ function startSpawning() {
 
         spawnCounter++;
 
-        spawnTime = Math.max(500, spawnTime - 80);
+        spawnTime = Math.max(200, spawnTime - 80);
 
         startSpawning();
     }, spawnTime);

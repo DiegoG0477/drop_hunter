@@ -4,11 +4,13 @@ import { GameRepository } from "@domain/repositories/GameRepository";
 export class PhaserGameRepository implements GameRepository {
     private spawnWorker: Worker;
     private clockWorker: Worker;
+    private fpsWorker: Worker;
     private itemQueue: Item[] = [];
 
     constructor() {
         this.spawnWorker = new Worker(new URL("./workers/spawnWorker.ts", import.meta.url));
         this.clockWorker = new Worker(new URL("./workers/clockWorker.ts", import.meta.url));
+        this.fpsWorker = new Worker(new URL("./workers/fpsWorker.ts", import.meta.url));
         
         this.spawnWorker.onmessage = (e) => {
             const item: Item = e.data;
@@ -16,20 +18,19 @@ export class PhaserGameRepository implements GameRepository {
         };
     }
 
-    startGame(): void {
-        console.log("Game started");
+    startFpsCounter(callback: (averageFps: number) => void) {
+        this.fpsWorker.onmessage = (e) => {
+            const { averageFps } = e.data;
+            callback(averageFps);
+        };
     }
 
-    endGame(): void {
-        console.log("Game ended");
+    countFrame() {
+        this.fpsWorker.postMessage({});
     }
 
-    pauseGame(): void {
-        console.log("Game paused");
-    }
-
-    resumeGame(): void {
-        console.log("Game resumed");
+    stopFpsCounter(): void {
+        this.fpsWorker.terminate();
     }
 
     startClock(callback: (minutes: number, seconds: number) => void) {
@@ -43,10 +44,6 @@ export class PhaserGameRepository implements GameRepository {
     stopClock(): void {
         this.clockWorker.postMessage({ action: "stop" });
     }
-
-    // resetClock() {
-    //     this.clockWorker.postMessage({ action: "reset" });
-    // }
 
     startSpawning(): void {
         this.spawnWorker.postMessage({ action: "start" });

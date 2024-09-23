@@ -11,6 +11,8 @@ import { StopCatcherWorkersUseCase } from "@application/use_cases/stopCatcherWor
 import { InitClockUseCase } from "@application/use_cases/initClockUseCase";
 import { StopClockUseCase } from "@application/use_cases/stopClockUseCase";
 import { LoseLifeUseCase } from "@application/use_cases/loseLifeUseCase";
+import { InitFpsCountUseCase } from "@application/use_cases/initFpsCountUseCase";
+import { StopFpsCounterUseCase } from "@application/use_cases/stopFpsCounterUseCase";
 import { Item } from "@domain/entities/Item";
 
 export class Game extends Scene {
@@ -21,15 +23,19 @@ export class Game extends Scene {
     private loseLifeUseCase: LoseLifeUseCase;
     private stopClockUseCase: StopClockUseCase;
     private initClockUseCase: InitClockUseCase;
+    private initFpsCountUseCase: InitFpsCountUseCase;
+    private stopFpsCounterUseCase: StopFpsCounterUseCase;
     background: Phaser.GameObjects.Image;
     panel: Phaser.GameObjects.Image;
     outOfBoundsCollider: Phaser.Physics.Arcade.Image;
     scoreText: Phaser.GameObjects.Text;
     livesText: Phaser.GameObjects.Text;
     durationText: Phaser.GameObjects.Text;
+    fpsText: Phaser.GameObjects.Text;
     poisons: Phaser.Physics.Arcade.Group;
     targets: Phaser.Physics.Arcade.Group;
     catcher: Phaser.Physics.Arcade.Image;
+    music: Phaser.Sound.BaseSound;
     catcherEntity: Catcher;
     poisonEntity: Poison;
     targetEntity: Target;
@@ -54,18 +60,25 @@ export class Game extends Scene {
         let lvlCatcherStr = "";
         let lvlPoisonStr = "";
         let lvlTargetStr = "";
+        let lvlMusicStr = "";
+        let lvlFailSoundStr = "";
+
         switch (this.level) {
             case 1:
                 lvlBackgroundStr = "lvlOneBackground";
                 lvlCatcherStr = "lvlOneCatcher";
                 lvlPoisonStr = "lvlOnePoison";
                 lvlTargetStr = "lvlOneTarget";
+                lvlMusicStr = "lvlOneMusic";
+                lvlFailSoundStr = "lvlOneFailSound";
                 break;
             case 2:
                 lvlBackgroundStr = "lvlTwoBackground";
                 lvlCatcherStr = "lvlTwoCatcher";
                 lvlPoisonStr = "lvlTwoPoison";
                 lvlTargetStr = "lvlTwoTarget";
+                lvlMusicStr = "lvlTwoMusic";
+                lvlFailSoundStr = "lvlTwoFailSound";
                 break;
         }
 
@@ -76,6 +89,8 @@ export class Game extends Scene {
         this.stopCatcherWorkersUseCase = new StopCatcherWorkersUseCase(catcherRepository);
         this.stopClockUseCase = new StopClockUseCase(gameRepository);
         this.initClockUseCase = new InitClockUseCase(gameRepository);
+        this.initFpsCountUseCase = new InitFpsCountUseCase(gameRepository);
+        this.stopFpsCounterUseCase = new StopFpsCounterUseCase(gameRepository);
 
         const catcherConfig = {
             id: "catcher",
@@ -131,15 +146,15 @@ export class Game extends Scene {
         this.panel = this.add
             .image(20, 0, "gamePanel")
             .setOrigin(0, 0)
-            .setDisplaySize(250, 250);
+            .setDisplaySize(250, 320);
 
-        this.scoreText = this.add.text(40, 40, `Score: ${this.catcherEntity.getScore()}`, {
+        this.scoreText = this.add.text(40, 50, `Score: ${this.catcherEntity.getScore()}`, {
             fontFamily: "square",
             fontSize: "35px",
             color: "#fff",
         });
 
-        this.livesText = this.add.text(40, 100, `Lives: ${this.catcherEntity.getLives()}`, {
+        this.livesText = this.add.text(40, 110, `Lives: ${this.catcherEntity.getLives()}`, {
             fontFamily: "square",
             fontSize: "35px",
             color: "#fff",
@@ -149,12 +164,24 @@ export class Game extends Scene {
             this.updateDurationText(minutes, seconds);
         });
 
-        // Texto para mostrar la duración
-        this.durationText = this.add.text(40, 160, "Time: 00:00", {
+        this.durationText = this.add.text(40, 170, "Time: 00:00", {
             fontFamily: "square",
             fontSize: "35px",
             color: "#fff",
         });
+
+        this.fpsText = this.add.text(40, 230, "FPS: 0", {
+            fontFamily: "square",
+            fontSize: "35px",
+            color: "#fff",
+        });
+
+        this.initFpsCountUseCase.execute((averageFps: number) => {
+            this.updateFpsText(averageFps);
+        });
+
+        this.music = this.sound.add(lvlMusicStr, { loop: true });
+        this.music.play();
 
         this.outOfBoundsCollider = this.physics.add
         .image(this.scale.width / 2, this.scale.height + 50, "")
@@ -211,6 +238,7 @@ export class Game extends Scene {
 
         this.physics.add.overlap(this.outOfBoundsCollider, this.targets, (collider, target) => {
             this.handleTargetMissed(target);
+            this.sound.play(lvlFailSoundStr);
         });
 
         this.physics.add.overlap(this.outOfBoundsCollider, this.targets, (collider, poison) => {
@@ -219,6 +247,7 @@ export class Game extends Scene {
 
         this.physics.add.overlap(this.catcher, this.poisons, (catcher, poison) => {
             poison.destroy();
+            this.sound.play('gameOverSound');
             this.shutdown();
         });
     }
@@ -241,6 +270,7 @@ export class Game extends Scene {
 
     handleTargetMissed(target: any) {
         this.loseLifeUseCase.execute(this.catcherEntity);
+
         this.updateLivesText();
         target.destroy();
 
@@ -263,10 +293,16 @@ export class Game extends Scene {
         this.durationText.setText(`Time: ${formattedMinutes}:${formattedSeconds}`);
     }
 
+    updateFpsText(averageFps: number) {
+        this.fpsText.setText(`FPS: ${averageFps}`);
+    }
+
     shutdown() {
+        this.music.stop();
         this.endSpawningUseCase.execute();
         this.stopCatcherWorkersUseCase.execute();
         this.stopClockUseCase.execute();
+        this.stopFpsCounterUseCase.execute();
 
         this.catcher.destroy();
         this.poisons.clear(true, true);
@@ -284,7 +320,7 @@ export class Game extends Scene {
 
         this.scene.start("GameOver", {
             score: this.catcherEntity.getScore(),
-            level: this.level,
+            duration: this.durationText.text,
         });
     }
 }

@@ -21,20 +21,6 @@ export class PhaserCatcherRepository implements CatcherRepository {
         catcher.setLives(catcher.getLives() - 1);
     }
 
-    resetLives(catcher: Catcher): Promise<Catcher> {
-        return new Promise((resolve) => {
-            catcher.setLives(3);
-            resolve(catcher);
-        });
-    }
-
-    recoverScore(catcher: Catcher): Promise<Catcher> {
-        return new Promise((resolve) => {
-            catcher.setScore(0);
-            resolve(catcher);
-        });
-    }
-
     stopWorkers(): void {
         this.scoreWorker.terminate();
     }
