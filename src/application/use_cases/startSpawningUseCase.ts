@@ -6,8 +6,7 @@ export class StartSpawningUseCase {
 
     async execute(callback: (item: Item) => void): Promise<void> {
         this.gameRepository.startSpawning();
-        
-        // Ciclo para recibir continuamente los items del worker
+
         while (true) {
             const item = await this.gameRepository.getNextSpawnItem();
             callback(item);

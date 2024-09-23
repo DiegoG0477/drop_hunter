@@ -4,7 +4,7 @@ import { CatcherRepository } from "@domain/repositories/CatcherRepository";
 export class LoseLifeUseCase {
     constructor(private catcherRepository: CatcherRepository) {}
 
-    async execute(catcher: Catcher): Promise<Catcher> {
-        return this.catcherRepository.decreaseLives(catcher);
+    execute(catcher: Catcher): void {
+        this.catcherRepository.decreaseLives(catcher);
     }
 }

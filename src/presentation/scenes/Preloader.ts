@@ -34,6 +34,8 @@ export class Preloader extends Scene
 
         this.load.image('logo', 'logo.png');
 
+        this.load.image('gamePanel', 'hud/frame.png');
+
         this.load.image('levelOneBtn', 'buttons/level_one_btn.png');
 
         this.load.image('lvlOneBackground', 'backgrounds/lvl_one_bg.webp');

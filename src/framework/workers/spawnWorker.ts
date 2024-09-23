@@ -17,7 +17,6 @@ function startSpawning() {
         const x = 70 + Math.random() * 600;
         const y = -50;
 
-        // Decidir si es un target o poison (cada 6 targets, un poison)
         const type =
             spawnCounter % 6 === 0 && spawnCounter !== 0 ? "poison" : "target";
 

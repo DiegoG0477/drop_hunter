@@ -17,9 +17,9 @@
         "isolatedModules": true,
         /* Linting */
         "strict": true,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,  
         "strictPropertyInitialization": false,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "baseUrl": "./src",
         "paths": {

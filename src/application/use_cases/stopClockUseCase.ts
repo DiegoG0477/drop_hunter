@@ -1,9 +1,9 @@
 import { GameRepository } from "@domain/repositories/GameRepository";
 
-export class EndGameUseCase {
+export class StopClockUseCase {
     constructor(private gameRepository: GameRepository) {}
 
-    async execute(): Promise<void> {
-        this.gameRepository.endGame();
+    execute() {
+        this.gameRepository.stopClock();
     }
 }

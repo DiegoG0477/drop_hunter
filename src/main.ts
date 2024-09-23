@@ -6,8 +6,6 @@ import { Preloader } from './presentation/scenes/Preloader';
 
 import { Game, Types } from "phaser";
 
-//  Find out more information about the Game Config at:
-//  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
 const config: Types.Core.GameConfig = {
     type: Phaser.AUTO,
     width: 720,
@@ -22,7 +20,7 @@ const config: Types.Core.GameConfig = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { x: 0, y: 300 },
+            gravity: { x: 0, y: 0 },
             debug: false
         }
     },

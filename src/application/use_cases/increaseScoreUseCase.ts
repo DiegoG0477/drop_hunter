@@ -4,7 +4,7 @@ import { CatcherRepository } from "@domain/repositories/CatcherRepository";
 export class IncreaseScoreUseCase {
     constructor(private catcherRepository: CatcherRepository) {}
 
-    async execute(catcher: Catcher): Promise<Catcher> {
-        return this.catcherRepository.increaseScore(catcher);
+    execute(catcher: Catcher, increment: number): void {
+        this.catcherRepository.increaseScore(catcher, increment);
     }
 }
